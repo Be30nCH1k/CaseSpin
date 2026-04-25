@@ -1,0 +1,31 @@
+.footer {
+  background: #080a19;
+  border-top: 1px solid #1e2339;
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #13cdff 50%, transparent 100%);
+  }
+}
+
+.footer__logo {
+  height: 60px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.footer__copyright {
+  color: rgb(183, 188, 219);
+  font-size: 14px;
+}

@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Rouben';
+  src: url('../fonts/Rouben Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DrukCyr';
+  src: url('../fonts/DrukCyr-BoldItalic.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: 'Rouben', sans-serif;
+}

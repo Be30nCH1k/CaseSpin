@@ -1,0 +1,58 @@
+.case {
+  position: relative;
+  text-align: center;
+  &_image {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    transition: .2s all;
+
+  }
+
+  &_title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  &_price {
+    position: relative;
+    display: inline-block;
+  }
+
+  &_price_bg {
+    width: 205px;
+    height: 45px;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+  }
+
+  &_price_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff552e;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  &_line{
+    background-color: #1e2339;
+    height: 1px;
+    width: 100%;
+    margin-top: 25px;
+  }
+
+  &:hover{
+    .case_image{
+      transform: scale(1.1);
+    }
+    .case_line{
+      background-color: #13cdff;
+
+    }
+  }
+}
