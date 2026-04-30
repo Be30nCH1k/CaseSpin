@@ -24,6 +24,7 @@ from .serializers import (
     CaseSerializer,
     InventoryItemSerializer
 )
+from django.db.models import F
 
 
 class RegisterView(generics.CreateAPIView):
@@ -40,10 +41,9 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
         methods=['post'],
         permission_classes=[IsAuthenticated]
     )
+    @transaction.atomic
     def spin(self, request, pk=None):
-        from django.contrib.auth.models import User
-
-
+        user = request.user
 
         case = self.get_object()
 
@@ -58,17 +58,25 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
                     status=400
                 )
 
-            roll = random.randint(1, 10000000)
+            max_range = case.caseitem_set.order_by('-range_to').first().range_to
+            roll = random.randint(1, max_range)
 
-            won_case_item = case.caseitem_set.get(
+            won_case_item = case.caseitem_set.filter(
                 range_from__lte=roll,
                 range_to__gte=roll
-            )
+            ).first()
+
+            if not won_case_item:
+                return Response(
+                    {"error": "Предмет для выпадения не найден"},
+                    status=400
+                )
 
             won_item = won_case_item.item
 
-            profile.balance -= case.price
+            profile.balance = F('balance') - case.price
             profile.save()
+            profile.refresh_from_db()
 
             InventoryItem.objects.create(
                 user=user,

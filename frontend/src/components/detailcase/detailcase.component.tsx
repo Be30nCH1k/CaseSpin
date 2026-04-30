@@ -3,11 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './detailcase.component.module.scss';
 import api from '../../api/api';
 import { Case } from '../../types/types.ts';
-import CaseOpening from '../case/caseOpeningAnimation/caseOpeningAnimation.component.tsx';
+import CaseOpening from '../caseOpeningAnimation/caseOpeningAnimation.component.tsx';
 
 export const CaseDetailComponent: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-
+    const [isOpening, setIsOpening] = useState(false);
+    const [wonItem, setWonItem] = useState<any>(null);
     const [currentCase, setCurrentCase] = useState<Case | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -68,25 +69,31 @@ export const CaseDetailComponent: React.FC = () => {
                 <h1 className={styles['case_title']}>
                     {currentCase.name}
                 </h1>
+                {!isOpening && !wonItem && (
+                    <div className={styles['case_image_container']}>
+                        <div
+                            className={styles['case_image_bg']}
+                            style={{
+                                backgroundImage: `url(${currentCase.image_url})`
+                            }}
+                        />
 
-                <div className={styles['case_image_container']}>
-                    <div
-                        className={styles['case_image_bg']}
-                        style={{
-                            backgroundImage: `url(${currentCase.image_url})`
-                        }}
-                    />
-
-                    <img
-                        src={currentCase.image_url}
-                        alt={currentCase.name}
-                        className={styles['case_image']}
-                    />
-                </div>
-
+                        <img
+                            src={currentCase.image_url}
+                            alt={currentCase.name}
+                            className={styles['case_image']}
+                        />
+                    </div>
+                )}
                 <div className={styles['case_info']}>
                     {isAuthorized ? (
-                        <CaseOpening caseId={Number(id)} />
+                        <CaseOpening
+                            caseId={Number(id)}
+                            isOpening={isOpening}
+                            setIsOpening={setIsOpening}
+                            wonItem={wonItem}
+                            setWonItem={setWonItem}
+                        />
                     ) : (
                         <Link
                             to="/login"
