@@ -7,8 +7,8 @@ import CaseOpening from '../caseOpeningAnimation/caseOpeningAnimation.component.
 
 export const CaseDetailComponent: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [isOpening,setIsOpening]    = useState(false);
-    const [showResult,   setShowResult]   = useState(false);
+    const [isOpening,    setIsOpening]    = useState(false);
+    const [showResult,   setShowResult]   = useState(false); // ← поднято сюда
     const [currentCase,  setCurrentCase]  = useState<Case | null>(null);
     const [loading,      setLoading]      = useState(true);
     const [error,        setError]        = useState<string | null>(null);
@@ -78,12 +78,12 @@ export const CaseDetailComponent: React.FC = () => {
                 <div className={styles.case_info}>
                     {isAuthorized ? (
                         <CaseOpening
+                            casePrice={parseFloat(String(currentCase.price ?? 0))}
                             caseId={Number(id)}
                             isOpening={isOpening}
                             setIsOpening={setIsOpening}
                             showResult={showResult}
                             setShowResult={setShowResult}
-                            casePrice={Number(currentCase.price)}
                         />
                     ) : (
                         <Link to="/login" className={styles.login_button}>

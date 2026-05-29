@@ -6,6 +6,7 @@ import { ContractPage } from "../pages/contract/contract.page.tsx";
 import LoginPage from "../components/login/login.component.tsx";
 import DetailPage from "../pages/detail/detail.page.tsx";
 import {RegisterPage} from "../pages/register/register.page.tsx";
+import {InventoryPage} from "../pages/inventory/inventory.page.tsx";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -16,7 +17,8 @@ export const router = createBrowserRouter([
             { path: "contract", element: <ContractPage /> },
             { path: "case/:id", element: <DetailPage /> },
             { path: "login", element: <LoginPage />},
-            { path: "register", element: <RegisterPage />}
+            { path: "register", element: <RegisterPage />},
+            { path: "inventory", element: <InventoryPage />}
         ],
     },
 ]);

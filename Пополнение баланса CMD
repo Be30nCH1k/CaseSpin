@@ -1,0 +1,10 @@
+from users.models import Profile
+from django.contrib.auth.models import User
+
+user = User.objects.get(username="123")
+profile = Profile.objects.get(user=user)
+profile.balance = 100000000
+profile.save()
+
+
+python manage.py generate_case_ranges

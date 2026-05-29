@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import random
 
+
 def get_random_avatar(username: str) -> str:
     styles = [
         'adventurer', 'avataaars', 'big-ears', 'croodles',
@@ -22,10 +23,9 @@ class Item(models.Model):
         ('red',    'Covert'),
         ('gold',   'Exceedingly Rare'),
     ]
-
-    weapon_name = models.CharField(max_length=255, verbose_name="Название оружия")
-    skin_name   = models.CharField(max_length=255, verbose_name="Название скина")
-    price       = models.DecimalField(max_digits=10, decimal_places=2)
+    weapon_name = models.CharField(max_length=255)
+    skin_name   = models.CharField(max_length=255)
+    price       = models.DecimalField(max_digits=100, decimal_places=2)
     rarity      = models.CharField(max_length=10, choices=RARITY_CHOICES, default='blue')
     image_url   = models.URLField(blank=True, max_length=2000)
 
@@ -39,9 +39,8 @@ class Case(models.Model):
         ('middle',    'Средние'),
         ('expensive', 'Дорогие'),
     ]
-
     name        = models.CharField(max_length=255)
-    price       = models.IntegerField()
+    price       = models.DecimalField(max_digits=100, decimal_places=2)
     description = models.TextField(blank=True)
     category    = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='cheap')
     image_url   = models.URLField(blank=True, max_length=2000)
@@ -54,17 +53,17 @@ class Case(models.Model):
 class CaseItem(models.Model):
     case       = models.ForeignKey(Case, on_delete=models.CASCADE)
     item       = models.ForeignKey(Item, on_delete=models.CASCADE)
-    chance     = models.DecimalField(max_digits=8, decimal_places=4, help_text="Шанс выпадения в %")
+    chance     = models.DecimalField(max_digits=8, decimal_places=4)
     range_from = models.IntegerField(null=True, blank=True)
     range_to   = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.item.weapon_name} | {self.item.skin_name} in {self.case.name} ({self.chance}%)"
+        return f"{self.item} in {self.case} ({self.chance}%)"
 
 
 class Profile(models.Model):
     user       = models.OneToOneField(User, on_delete=models.CASCADE)
-    balance    = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    balance    = models.DecimalField(max_digits=100, decimal_places=2, default=0.00)
     avatar_url = models.URLField(blank=True, max_length=2000)
 
     def __str__(self):
@@ -83,9 +82,31 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 class InventoryItem(models.Model):
+    """Текущий инвентарь — предметы которые можно продать/вывести."""
     user       = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inventory')
     item       = models.ForeignKey(Item, on_delete=models.CASCADE)
     dropped_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} won {self.item.weapon_name} | {self.item.skin_name}"
+        return f"{self.user.username} | {self.item}"
+
+
+class DropHistory(models.Model):
+    """
+    История всех дропов — не удаляется при продаже.
+    Используется для отображения карточек и лучшего дропа за всё время.
+    """
+    user           = models.ForeignKey(User, on_delete=models.CASCADE, related_name='drop_history')
+    item           = models.ForeignKey(Item, on_delete=models.CASCADE)
+    inventory_item = models.OneToOneField(
+        InventoryItem,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='history'
+    )
+    dropped_at = models.DateTimeField(auto_now_add=True)
+    is_sold    = models.BooleanField(default=False)  # True когда продан
+
+    def __str__(self):
+        status = "продан" if self.is_sold else "в инвентаре"
+        return f"{self.user.username} | {self.item} [{status}]"
