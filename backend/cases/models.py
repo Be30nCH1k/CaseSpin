@@ -110,3 +110,14 @@ class DropHistory(models.Model):
     def __str__(self):
         status = "продан" if self.is_sold else "в инвентаре"
         return f"{self.user.username} | {self.item} [{status}]"
+
+class ContractHistory(models.Model):
+    """История контрактов."""
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contract_history')
+    result_item  = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='contract_results')
+    input_value  = models.DecimalField(max_digits=100, decimal_places=2)   # сумма сданных скинов
+    result_value = models.DecimalField(max_digits=100, decimal_places=2)   # цена полученного скина
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} | {self.result_item} | {self.created_at:%Y-%m-%d %H:%M}"

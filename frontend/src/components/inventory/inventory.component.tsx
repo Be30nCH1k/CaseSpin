@@ -20,6 +20,7 @@ export const InventoryComponent = () => {
     const [loading, setLoading] = useState(true);
     const [selling, setSelling] = useState<Set<number>>(new Set());
     const [visibleCount, setVisibleCount] = useState(INITIAL_ROWS * ITEMS_PER_ROW);
+    const [showUnsoldOnly, setShowUnsoldOnly] = useState(false);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -83,9 +84,10 @@ export const InventoryComponent = () => {
 
     const unsoldDrops = drops.filter(d => !d.is_sold);
     const unsoldTotal = unsoldDrops.reduce((s, d) => s + safePrice(d.item.price), 0);
-    const visibleDrops = drops.slice(0, visibleCount);
-    const hasMore = visibleCount < drops.length;
-    const remainingCount = drops.length - visibleCount;
+    const filteredDrops = showUnsoldOnly ? drops.filter(d => !d.is_sold) : drops;
+    const visibleDrops = filteredDrops.slice(0, visibleCount);
+    const hasMore = visibleCount < filteredDrops.length;
+    const remainingCount = filteredDrops.length - visibleCount;
 
     return (
         <div className={cn(styles.page)}>
@@ -134,9 +136,23 @@ export const InventoryComponent = () => {
             )}
 
             <div className={cn(styles.toolbar)}>
-                <span className={cn(styles.tab_label)}>
-                    ТВОИ СКИНЫ <span className={cn(styles.tab_count)}>{drops.length}</span>
-                </span>
+                <div className={cn(styles.toolbar__left)}>
+        <span className={cn(styles.tab_label)}>
+            ТВОИ СКИНЫ <span className={cn(styles.tab_count)}>{drops.length}</span>
+        </span>
+                    <button
+                        className={cn(styles.btn_filter, showUnsoldOnly && styles.btn_filter__active)}
+                        onClick={() => {
+                            setShowUnsoldOnly(o => !o);
+                            setVisibleCount(INITIAL_ROWS * ITEMS_PER_ROW); // сброс пагинации
+                        }}
+                    >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                        </svg>
+                        {showUnsoldOnly ? `В инвентаре · ${unsoldDrops.length}` : "В инвентаре"}
+                    </button>
+                </div>
                 <button
                     className={cn(styles.btn_sell_all)}
                     onClick={handleSellAll}

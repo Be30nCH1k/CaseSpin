@@ -120,3 +120,16 @@ class UpgradeResultSerializer(serializers.Serializer):
     new_balance = serializers.CharField()
     message = serializers.CharField(required=False)
     chance_used = serializers.FloatField(required=False)
+
+class ContractPerformSerializer(serializers.Serializer):
+    item_ids     = serializers.ListField(
+        child=serializers.IntegerField(),
+        min_length=3,
+        max_length=10,
+        help_text="ID предметов из InventoryItem (3–10 штук)"
+    )
+    reward_price = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        help_text="Рассчитанная фронтендом желаемая цена награды"
+    )

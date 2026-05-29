@@ -101,10 +101,50 @@ $card:   #0d1225;
   padding-bottom: 14px;
   border-bottom: 1px solid rgba(0,217,255,0.08);
 
-  &__left { display: flex; align-items: center; gap: 16px; }
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
   &__right { display: flex; align-items: center; gap: 10px; }
 }
+.btn_filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
 
+  svg {
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.8);
+
+    svg { opacity: 1; }
+  }
+
+  &__active {
+    border-color: rgba(0, 217, 255, 0.5);
+    background: rgba(0, 217, 255, 0.08);
+    color: #00d9ff;
+
+    svg {
+      opacity: 1;
+      stroke: #00d9ff;
+    }
+  }
+}
 .tab_label {
   font-size: 14px; font-weight: 800; color: $cyan;
   text-transform: uppercase; letter-spacing: 1.5px;

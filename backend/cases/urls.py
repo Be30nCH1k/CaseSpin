@@ -10,7 +10,8 @@ from .views import (
     RegisterView,
     MeView,
     MyTokenObtainPairView,
-    UpgradeViewSet
+    UpgradeViewSet,
+    ContractViewSet
 )
 
 router = DefaultRouter()
@@ -19,6 +20,8 @@ router.register(r'recent-drops', RecentDropsViewSet, basename='recent-drops')
 router.register(r'inventory',    InventoryViewSet,   basename='inventory')
 router.register(r'drop-history', DropHistoryViewSet, basename='drop-history')
 router.register(r'upgrade', UpgradeViewSet, basename='upgrade')
+router.register(r'contract', ContractViewSet, basename='contract')
+
 
 
 urlpatterns = [

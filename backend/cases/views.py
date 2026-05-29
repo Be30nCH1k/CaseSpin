@@ -1,5 +1,6 @@
 from rest_framework import viewsets, serializers as drf_serializers, status
 from rest_framework.decorators import action
+from django.db.models.functions import Abs
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -12,9 +13,10 @@ from django.db import transaction
 from django.db.models import Sum, F
 import random
 from decimal import Decimal
+from django.db import models as django_models
 
-from .models import Case, InventoryItem, Profile, DropHistory, Item
-from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer
+from .models import Case, InventoryItem, Profile, DropHistory, Item, ContractHistory
+from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer,ContractPerformSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -401,3 +403,109 @@ class UpgradeViewSet(viewsets.ViewSet):
                 }
 
         return Response(result_data)
+
+
+class ContractViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['post'], url_path='perform')
+    @transaction.atomic
+    def perform_contract(self, request):
+        serializer = ContractPerformSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        item_ids     = serializer.validated_data['item_ids']
+        reward_price = serializer.validated_data['reward_price']
+
+        # ── Проверяем и получаем предметы из инвентаря ───────────────────────
+        inventory_items = InventoryItem.objects.select_related('item').filter(
+            id__in=item_ids,
+            user=request.user
+        )
+
+        if inventory_items.count() != len(item_ids):
+            return Response(
+                {'error': 'Один или несколько предметов не найдены в инвентаре'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ── Считаем суммарную стоимость сданных скинов ───────────────────────
+        total_input = sum(i.item.price for i in inventory_items)
+
+        # ── Валидация reward_price от фронтенда ───────────────────────────────
+        # Бэкенд сам пересчитывает допустимый диапазон и не доверяет фронту
+        min_reward = total_input * Decimal('0.20')   # минимум 20% суммы
+        max_reward = total_input * Decimal('5.00')   # максимум 500% суммы
+
+        # Если фронт прислал значение вне диапазона — генерируем сами
+        if not (min_reward <= reward_price <= max_reward):
+            # Логарифмическое распределение: чаще ближе к низкому концу
+            t            = Decimal(str(random.random() ** 1.8))
+            reward_price = min_reward + t * (max_reward - min_reward)
+            reward_price = (reward_price / 10).quantize(Decimal('1')) * 10  # округляем до 10
+
+        # ── Ищем предмет с ближайшей ценой к reward_price ────────────────────
+        # Берём предметы в диапазоне ±30% от reward_price и рандомим среди них
+        price_low  = reward_price * Decimal('0.70')
+        price_high = reward_price * Decimal('1.30')
+
+        candidate_items = list(
+            Item.objects.filter(price__gte=price_low, price__lte=price_high)
+        )
+
+        # Если в диапазоне ничего нет — расширяем до глобального ближайшего
+        if not candidate_items:
+            candidate_items = list(
+                Item.objects.annotate(
+                    diff=Abs(F('price') - reward_price)
+                ).order_by('diff')[:5]
+            )
+
+        if not candidate_items:
+            return Response(
+                {'error': 'Нет доступных предметов для выдачи'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        result_item = random.choice(candidate_items)
+
+        # ── Списываем сданные предметы ────────────────────────────────────────
+        DropHistory.objects.filter(inventory_item__in=inventory_items).update(is_sold=True)
+        inventory_items.delete()
+
+        # ── Выдаём новый предмет ──────────────────────────────────────────────
+        new_inventory_item = InventoryItem.objects.create(
+            user=request.user,
+            item=result_item
+        )
+
+        DropHistory.objects.create(
+            user=request.user,
+            item=result_item,
+            inventory_item=new_inventory_item
+        )
+
+        # ── Логируем контракт ─────────────────────────────────────────────────
+        ContractHistory.objects.create(
+            user         = request.user,
+            result_item  = result_item,
+            input_value  = total_input,
+            result_value = result_item.price,
+        )
+
+        profile = Profile.objects.get(user=request.user)
+
+        return Response({
+            'success': True,
+            'item': {
+                'id':          new_inventory_item.id,
+                'weapon_name': result_item.weapon_name,
+                'skin_name':   result_item.skin_name,
+                'price':       str(result_item.price),
+                'rarity':      result_item.rarity,
+                'image_url':   result_item.image_url,
+            },
+            'input_value':  str(total_input),
+            'result_value': str(result_item.price),
+            'new_balance':  str(profile.balance),
+        })

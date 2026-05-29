@@ -231,7 +231,7 @@ export const UpgradeComponent = () => {
     const handleUpgrade = async () => {
         if (!selectedItem || !selectedTarget || spinning || chance <= 0) return;
 
-        frozenChance.current = chance; // фиксируем до сброса selectedItem
+        frozenChance.current = chance;
         setSpinning(true);
         setSpinResult(null);
 
@@ -242,8 +242,8 @@ export const UpgradeComponent = () => {
                 balance_amount: balanceAdd,
             });
 
-            const isWin   = data.success;
-            const winDeg  = (chance / 100) * 360;
+            const isWin  = data.success;
+            const winDeg = (frozenChance.current / 100) * 360;
             let stopAngle: number;
 
             if (isWin) {
@@ -254,23 +254,24 @@ export const UpgradeComponent = () => {
                 stopAngle = winDeg + margin + Math.random() * (360 - winDeg - margin * 2);
             }
 
-            animateNeedle(stopAngle, () => {
-                setSpinResult(isWin ? "win" : "lose");
-                setTimeout(() => {
-                    setSpinning(false);
-                }, 700);
-            });
-
+            // Обновляем баланс сразу — это нормально
             if (data.new_balance) {
                 setUser((u: any) => u ? { ...u, balance: data.new_balance } : u);
                 window.dispatchEvent(new CustomEvent("balance:update", { detail: data.new_balance }));
             }
 
-            await fetchAll();
-            setSelectedItem(null);
-            setSelectedTarget(null);
-            setBalanceAdd(0);
-            fetchTargets();
+            animateNeedle(stopAngle, async () => {
+                setSpinResult(isWin ? "win" : "lose");
+
+                setTimeout(async () => {
+                    setSpinning(false);
+                    await fetchAll();          // ← переехало сюда
+                    setSelectedItem(null);     // ← переехало сюда
+                    setSelectedTarget(null);   // ← переехало сюда
+                    setBalanceAdd(0);          // ← переехало сюда
+                    fetchTargets();            // ← переехало сюда
+                }, 700);
+            });
 
         } catch (e: any) {
             setSpinning(false);

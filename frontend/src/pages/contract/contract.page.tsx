@@ -1,9 +1,5 @@
+import { ContractComponent } from "../../components/contract/contract.component.tsx";
 
 export const ContractPage = () => {
-    return (
-        <div>
-контракт
-        </div>
-    );
+    return <ContractComponent />;
 };
-
