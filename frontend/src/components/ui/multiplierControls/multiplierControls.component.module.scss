@@ -1,0 +1,44 @@
+$cyan: #00d9ff;
+
+.wrap {
+  display: flex;
+  align-items: center;
+}
+
+.auto_btn {
+  width: 66px; height: 52px;
+  border: 1px solid rgba(0,200,255,.22);
+  background: rgba(8,13,28,.98);
+  color: #6ab8d8; font-size: 12px; font-weight: 800;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: .2s;
+
+  &:hover {
+    border-color: $cyan; color: white;
+  }
+  &.active {
+    border-color: $cyan; color: $cyan;
+    box-shadow: inset 0 0 18px rgba(0,217,255,.15), 0 0 18px rgba(0,217,255,.25);
+  }
+}
+
+.multi_controls {
+  display: flex;
+}
+
+.multi_btn {
+  width: 80px; height: 52px;
+  border: 1px solid rgba(0,200,255,.14);
+  background: rgba(7,11,22,.97);
+  color: #5e70a0; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: .2s;
+
+  &:hover {
+    color: white; border-color: rgba(0,217,255,.4);
+  }
+  &.active {
+    color: white; border-color: $cyan;
+    background: rgba(0,217,255,.07);
+    box-shadow: inset 0 0 16px rgba(0,217,255,.13), 0 0 16px rgba(0,217,255,.2);
+  }
+}

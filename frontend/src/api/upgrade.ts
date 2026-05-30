@@ -5,7 +5,6 @@ export const upgradeApi = {
     getAvailableSkins: () =>
         api.get<UpgradeSkin[]>('/upgrade/available-skins/'),
 
-    // Выполнить апгрейд
     performUpgrade: (data: UpgradeRequest) =>
         api.post<UpgradeResult>('/upgrade/perform/', data),
 };

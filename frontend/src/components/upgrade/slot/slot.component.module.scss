@@ -1,0 +1,110 @@
+$cyan:   #00d9ff;
+$gold:   #ffe600;
+$green:  #00ff88;
+$red:    #ff3355;
+$bg:     #080a19;
+$panel:  #0c1226;
+$border: rgba(0,217,255,0.12);
+.slot {
+  background: $panel;
+  border: 1px solid $border;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &_win {
+    border-color: rgba(0, 255, 136, 0.5) !important;
+    box-shadow: 0 0 24px rgba(0, 255, 136, 0.12) !important;
+  }
+
+  &_lose {
+    border-color: rgba(255, 51, 85, 0.5) !important;
+    box-shadow: 0 0 24px rgba(255, 51, 85, 0.12) !important;
+  }
+
+  &__label {
+    position: absolute;
+    top: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(0, 217, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 20px;
+    width: 100%;
+  }
+
+  &__img {
+    width: 150px;
+    height: 110px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 16px rgba(0, 217, 255, 0.2));
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    margin: 0;
+  }
+
+  &__skin {
+    font-size: 11px;
+    color: #5a6880;
+    margin: 0;
+  }
+
+  &__price {
+    font-size: 15px;
+    font-weight: 900;
+    color: $gold;
+    margin: 0;
+  }
+
+  &__remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #5a6880;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+
+    &:hover {
+      color: $red;
+      background: rgba(255, 51, 85, 0.1);
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #3a4a60;
+    font-size: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}

@@ -1,0 +1,110 @@
+.wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 200px;
+}
+
+.icon {
+  position: absolute;
+  left: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.5); }
+  &:focus        { border-color: rgba(0, 217, 255, 0.7); }
+}
+
+.clear_btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  transition: color 0.2s;
+
+  &:hover { color: #fff; }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #0e1535;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  &__item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+    box-sizing: border-box;
+
+    &:last-child { border-bottom: none; }
+    &:hover      { background: rgba(255, 255, 255, 0.06); }
+
+    mark {
+      background: none;
+      color: #00d9ff;
+      font-weight: 700;
+    }
+  }
+
+  &__img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    flex: 1;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__price {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+  }
+
+  &__empty {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+  }
+}

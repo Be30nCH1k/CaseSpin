@@ -1,40 +1,22 @@
-export interface InventoryItem {
+export interface Item {
     id: number;
     weapon_name: string;
     skin_name: string;
     price: number;
-    rarity: string;
     image_url: string;
+    rarity?: 'blue' | 'purple' | 'pink' | 'red' | 'gold';
 }
 
-export interface TargetItem {
+export interface User {
     id: number;
-    weapon_name: string;
-    skin_name: string;
-    price: number;
-    rarity: string;
-    image_url: string;
-    chance_percentage?: number | null;
+    balance: number;
+    username?: string;
 }
 
-export interface UpgradeResult {
+export type SpinResult = 'win' | 'lose' | null;
+
+export interface UpgradeResponse {
     success: boolean;
-    won_item?: {
-        id: number;
-        weapon_name: string;
-        skin_name: string;
-        price: number;
-        rarity: string;
-        image_url: string;
-    };
-    new_balance: string;
-    chance_used?: number;
-    roll?: number;
-    message?: string;
-    lost_items?: {
-        weapon_name: string;
-        skin_name: string;
-        price: number;
-    };
-    lost_balance?: string;
+    new_balance?: number;
+    error?: string;
 }

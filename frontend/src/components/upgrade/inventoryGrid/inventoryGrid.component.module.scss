@@ -1,0 +1,108 @@
+$cyan:   #00d9ff;
+$gold:   #ffe600;
+$green:  #00ff88;
+$red:    #ff3355;
+$bg:     #080a19;
+$panel:  #0c1226;
+$border: rgba(0,217,255,0.12);
+
+.inv_grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 12px;
+  max-height: 489px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 217, 255, 0.2);
+  }
+}
+
+.inv_card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 6px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.15s;
+
+  &:hover {
+    border-color: rgba(0, 217, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  &_selected {
+    border-color: $cyan !important;
+    background: rgba(0, 217, 255, 0.07);
+  }
+
+  &__price {
+    font-size: 10px;
+    font-weight: 700;
+    color: $gold;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  &__img {
+    width: 100%;
+    height: 56px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 5px;
+  }
+
+  &__name {
+    font-size: 10px;
+    font-weight: 700;
+    color: #c0cce0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  &__skin {
+    font-size: 9px;
+    color: #3a4a60;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  &__check {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
+    background: $cyan;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #080a19;
+    font-size: 9px;
+    font-weight: 900;
+  }
+}
+
+.empty_state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: #3a4a60;
+  font-size: 13px;
+}
+
+.rarity_blue   { border-left: 3px solid #4b69ff; }
+.rarity_purple { border-left: 3px solid #8847ff; }
+.rarity_pink   { border-left: 3px solid #d32ce6; }
+.rarity_red    { border-left: 3px solid #eb4b4b; }
+.rarity_gold   { border-left: 3px solid #e4ae39; }

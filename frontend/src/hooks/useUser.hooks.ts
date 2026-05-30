@@ -7,7 +7,7 @@ export type UserInfo = {
     avatar_url: string;
 };
 
-export const useUser = () => {
+export const useUserHooks = () => {
     const [user, setUser]       = useState<UserInfo | null>(null);
     const [loading, setLoading] = useState(true);
 

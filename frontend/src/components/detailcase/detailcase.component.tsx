@@ -1,56 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import styles from './detailcase.component.module.scss';
-import api from '../../api/api';
-import { Case } from '../../types/types.ts';
-import CaseOpening from '../caseOpeningAnimation/caseOpeningAnimation.component.tsx';
+import React, { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import styles from './detailcase.component.module.scss'
+import api from '../../api/api'
+import { Case } from '../../types/types.ts'
+import CaseOpening from '../caseOpeningAnimation/caseOpeningAnimation.component.tsx'
 
 export const CaseDetailComponent: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [isOpening,    setIsOpening]    = useState(false);
-    const [showResult,   setShowResult]   = useState(false); // ← поднято сюда
-    const [currentCase,  setCurrentCase]  = useState<Case | null>(null);
-    const [loading,      setLoading]      = useState(true);
-    const [error,        setError]        = useState<string | null>(null);
-    const [isAuthorized, setIsAuthorized] = useState(() => !!localStorage.getItem('access'));
+    const { id } = useParams<{ id: string }>()
+    const [isOpening,    setIsOpening]    = useState(false)
+    const [showResult,   setShowResult]   = useState(false)
+    const [currentCase,  setCurrentCase]  = useState<Case | null>(null)
+    const [loading,      setLoading]      = useState(true)
+    const [error,        setError]        = useState<string | null>(null)
+    const [isAuthorized, setIsAuthorized] = useState(() => !!localStorage.getItem('access'))
 
+    // слушаю кастомные события логина и логаута чтобы реактивно обновлять состояние
     useEffect(() => {
-        const onLogin  = () => setIsAuthorized(true);
-        const onLogout = () => setIsAuthorized(false);
-        window.addEventListener('auth:login',  onLogin);
-        window.addEventListener('auth:logout', onLogout);
+        const onLogin  = () => setIsAuthorized(true)
+        const onLogout = () => setIsAuthorized(false)
+        window.addEventListener('auth:login',  onLogin)
+        window.addEventListener('auth:logout', onLogout)
         return () => {
-            window.removeEventListener('auth:login',  onLogin);
-            window.removeEventListener('auth:logout', onLogout);
-        };
-    }, []);
+            window.removeEventListener('auth:login',  onLogin)
+            window.removeEventListener('auth:logout', onLogout)
+        }
+    }, [])
 
+    // загружаю данные кейса и сортирую предметы по убыванию цены
     useEffect(() => {
-        if (!id) return;
+        if (!id) return
         const fetchCaseData = async () => {
             try {
-                setLoading(true);
-                const response = await api.get<Case>(`cases/${id}/`);
+                setLoading(true)
+                const response = await api.get<Case>(`cases/${id}/`)
                 const sortedData = {
                     ...response.data,
                     items: [...response.data.items].sort((a: any, b: any) =>
                         parseFloat(b.item.price) - parseFloat(a.item.price)
                     ),
-                };
-                setCurrentCase(sortedData);
-                setError(null);
+                }
+                setCurrentCase(sortedData)
+                setError(null)
             } catch (err: any) {
-                console.error(err);
-                setError('Кейс не найден или ошибка сервера');
+                console.error(err)
+                setError('Кейс не найден или ошибка сервера')
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
-        fetchCaseData();
-    }, [id]);
+        }
+        fetchCaseData()
+    }, [id])
 
-    if (loading) return <div className={styles.loader}>Загрузка кейса...</div>;
-    if (error || !currentCase) return <div className={styles.error}>{error}</div>;
+    if (loading) return <div className={styles.loader}>Загрузка кейса...</div>
+    if (error || !currentCase) return <div className={styles.error}>{error}</div>
 
     return (
         <div className={styles.case}>
@@ -115,7 +117,7 @@ export const CaseDetailComponent: React.FC = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default CaseDetailComponent;
+export default CaseDetailComponent

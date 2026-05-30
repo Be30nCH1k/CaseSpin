@@ -1,0 +1,71 @@
+$cyan: #00d9ff;
+$gold: #e3b341;
+$green: #00c846;
+
+$bg: #080a19;
+$card: #0d1225;
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 32px;
+  background: linear-gradient(
+                  135deg,
+                  rgba(0, 217, 255, 0.04) 0%,
+                  rgba(8, 10, 25, 1) 60%
+  );
+  border: 1px solid rgba(0, 217, 255, 0.1);
+  margin-bottom: 28px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0, 217, 255, 0.4);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.balance {
+  font-size: 14px;
+  color: #6a7ca8;
+  margin: 0;
+
+  span {
+    color: $green;
+    font-weight: 700;
+  }
+}
+
+.stats {
+  font-size: 13px;
+  color: #6a7ca8;
+  margin: 0;
+
+  span {
+    color: #a0b0d0;
+    font-weight: 600;
+  }
+}

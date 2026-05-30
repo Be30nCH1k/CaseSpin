@@ -16,10 +16,11 @@ from decimal import Decimal
 from django.db import models as django_models
 
 from .models import Case, InventoryItem, Profile, DropHistory, Item, ContractHistory
-from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer,ContractPerformSerializer
+from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer, ContractPerformSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # пихаю в jwt-токен баланс и аватарку чтобы фронт не дёргал /me лишний раз
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -53,9 +54,10 @@ class MeView(APIView):
         try:
             profile = user.profile
         except Profile.DoesNotExist:
+            # на случай, если профиль не создался
             profile = Profile.objects.create(user=user)
 
-        # Лучший дроп за всё время
+        # ищу лучший дроп за всё время просто сортирую по цене
         best = (
             DropHistory.objects
             .filter(user=user)
@@ -83,6 +85,7 @@ class MeView(APIView):
 
 
 class CaseViewSet(viewsets.ReadOnlyModelViewSet):
+    # кейсы только на чтение крутить можно через /spin
     queryset         = Case.objects.all()
     serializer_class = CaseSerializer
 
@@ -93,11 +96,13 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
         case = self.get_object()
 
         with transaction.atomic():
+            # блокирую профиль чтобы баланс не ушёл в минус при параллельных запросах
             profile = Profile.objects.select_for_update().get(user=user)
 
             if profile.balance < case.price:
                 return Response({"error": "Недостаточно средств"}, status=400)
 
+            # определяю границы рандома по самому большому range_to в кейсе
             max_range     = case.caseitem_set.order_by('-range_to').first().range_to
             roll          = random.randint(1, max_range)
             won_case_item = case.caseitem_set.filter(
@@ -109,14 +114,14 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
 
             won_item = won_case_item.item
 
+            # списываю через F() потом обновляю объект из базы
             profile.balance = F('balance') - case.price
             profile.save()
             profile.refresh_from_db()
 
-            # Создаём запись инвентаря
             inventory_item = InventoryItem.objects.create(user=user, item=won_item)
 
-            # Создаём запись истории (не удаляется при продаже)
+            # история хранится даже после продажи предмета
             DropHistory.objects.create(
                 user=user,
                 item=won_item,
@@ -137,6 +142,7 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecentDropsViewSet(viewsets.ReadOnlyModelViewSet):
+    # лента последних дропов видно всем, просто последние 20 записей инвентаря
     queryset         = InventoryItem.objects.all().order_by("-dropped_at")[:20]
     serializer_class = InventoryItemSerializer
 
@@ -146,6 +152,7 @@ class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # показываю только шмотки текущего юзера
         return InventoryItem.objects.filter(user=self.request.user).order_by("-dropped_at")
 
     @action(detail=True, methods=["post"])
@@ -161,9 +168,8 @@ class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
             profile.balance += sell_price
             profile.save()
 
-            # Помечаем историю как проданную
+            # помечаю историю проданной сам инвентарь удаляю
             DropHistory.objects.filter(inventory_item=inventory_item).update(is_sold=True)
-
             inventory_item.delete()
 
         return Response({
@@ -174,6 +180,7 @@ class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="sell_many")
     def sell_many(self, request):
+        # массовая продажа по списку id
         ids = request.data.get("ids", [])
         if not ids or not isinstance(ids, list):
             return Response({"error": "Передайте список ids"}, status=400)
@@ -190,7 +197,6 @@ class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
             profile.balance += total_price
             profile.save()
 
-            # Помечаем все как проданные в истории
             DropHistory.objects.filter(inventory_item__in=items).update(is_sold=True)
 
             sold_count = items.count()
@@ -204,9 +210,8 @@ class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
         })
 
 
-# ── История дропов пользователя ───────────────────────────────────────────────
-
 class DropHistoryViewSet(viewsets.ReadOnlyModelViewSet):
+    # история дропов конкретного юзера только чтение
     serializer_class   = DropHistorySerializer
     permission_classes = [IsAuthenticated]
 
@@ -217,6 +222,7 @@ class DropHistoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class UserInventoryView(APIView):
+    # запасной вариант получения инвентаря если вьюсет неудобен
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -224,12 +230,13 @@ class UserInventoryView(APIView):
         serializer = InventoryItemSerializer(inventory, many=True)
         return Response(serializer.data)
 
+
 class UpgradeViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['get'], url_path='inventory')
     def get_inventory(self, request):
-        """Получить инвентарь пользователя"""
+        # возвращаю инвентарь для страницы апгрейда
         items = InventoryItem.objects.filter(
             user=request.user
         ).select_related('item').order_by('-dropped_at')
@@ -239,7 +246,7 @@ class UpgradeViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'], url_path='target-items')
     def get_target_items(self, request):
-        """Получить все возможные предметы для апгрейда с динамическим шансом"""
+        # считаю шанс апгрейда на лету цена_текущего / цена_целевого * 100
         selected_item_id = request.query_params.get('selected_item_id')
 
         items = Item.objects.all().order_by('-price')
@@ -247,7 +254,6 @@ class UpgradeViewSet(viewsets.ViewSet):
         data = []
         selected_item_price = None
 
-        # Если передан ID выбранного предмета, получаем его цену
         if selected_item_id:
             try:
                 selected_inventory_item = InventoryItem.objects.get(
@@ -268,15 +274,14 @@ class UpgradeViewSet(viewsets.ViewSet):
                 'image_url': item.image_url,
             }
 
-            # Рассчитываем динамический шанс, если выбран предмет
             if selected_item_price and selected_item_price < item.price:
                 chance = (float(selected_item_price) / float(item.price)) * 100
-                chance = min(99.99, max(0.01, round(chance, 2)))  # Точность до 0.01%
+                chance = min(99.99, max(0.01, round(chance, 2)))
                 item_data['chance_percentage'] = chance
             elif selected_item_price and selected_item_price >= item.price:
-                item_data['chance_percentage'] = 0  # Недоступен для апгрейда
+                item_data['chance_percentage'] = 0  # нельзя апгрейдить в более дешёвое
             else:
-                item_data['chance_percentage'] = None  # Предмет не выбран
+                item_data['chance_percentage'] = None
 
             data.append(item_data)
 
@@ -285,7 +290,7 @@ class UpgradeViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'], url_path='perform')
     @transaction.atomic
     def perform_upgrade(self, request):
-        """Выполнить апгрейд одного предмета"""
+        # выполняю апгрейд сравниваю roll с динамическим шансом
         serializer = UpgradePerformSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -293,7 +298,6 @@ class UpgradeViewSet(viewsets.ViewSet):
         balance_amount = serializer.validated_data['balance_amount']
         target_item_id = serializer.validated_data['target_item_id']
 
-        # Получаем предмет из инвентаря
         try:
             inventory_item = InventoryItem.objects.select_related('item').get(
                 id=item_id,
@@ -305,7 +309,6 @@ class UpgradeViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Получаем целевой предмет
         try:
             target_item = Item.objects.get(id=target_item_id)
         except Item.DoesNotExist:
@@ -314,26 +317,22 @@ class UpgradeViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Проверяем, что целевой предмет дороже
         if target_item.price <= inventory_item.item.price:
             return Response(
                 {'error': 'Целевой предмет должен быть дороже текущего'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Рассчитываем динамический шанс на основе цен
         chance = (float(inventory_item.item.price) / float(target_item.price)) * 100
-        chance = min(95, max(5, round(chance, 2)))  # Округляем до 2 знаков
+        chance = min(95, max(5, round(chance, 2)))
 
-        # Бросаем кубик
-        roll = random.uniform(0.01, 99.99)  # Используем float для точности
+        roll = random.uniform(0.01, 99.99)
         roll = round(roll, 2)
         is_success = roll <= chance
 
         with transaction.atomic():
             profile = Profile.objects.select_for_update().get(user=request.user)
 
-            # Списываем баланс
             if balance_amount > 0:
                 if profile.balance < balance_amount:
                     return Response(
@@ -343,20 +342,17 @@ class UpgradeViewSet(viewsets.ViewSet):
                 profile.balance -= balance_amount
 
             if is_success:
-                # Создаем новый предмет
                 new_item = InventoryItem.objects.create(
                     user=request.user,
                     item=target_item
                 )
 
-                # Записываем в историю (без upgrade_source)
                 DropHistory.objects.create(
                     user=request.user,
                     item=target_item,
                     inventory_item=new_item
                 )
 
-                # Удаляем старый предмет
                 DropHistory.objects.filter(
                     inventory_item=inventory_item
                 ).update(is_sold=True)
@@ -380,7 +376,6 @@ class UpgradeViewSet(viewsets.ViewSet):
                     'message': f'Успех! Шанс был {chance}%, выпало {roll}%'
                 }
             else:
-                # Провал: предмет и баланс сгорают
                 DropHistory.objects.filter(
                     inventory_item=inventory_item
                 ).update(is_sold=True)
@@ -411,13 +406,13 @@ class ContractViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'], url_path='perform')
     @transaction.atomic
     def perform_contract(self, request):
+        # сдаю пачку скинов получаю один случайный в диапазоне 30% от рассчитанной награды
         serializer = ContractPerformSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         item_ids     = serializer.validated_data['item_ids']
         reward_price = serializer.validated_data['reward_price']
 
-        # ── Проверяем и получаем предметы из инвентаря ───────────────────────
         inventory_items = InventoryItem.objects.select_related('item').filter(
             id__in=item_ids,
             user=request.user
@@ -429,23 +424,18 @@ class ContractViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # ── Считаем суммарную стоимость сданных скинов ───────────────────────
         total_input = sum(i.item.price for i in inventory_items)
 
-        # ── Валидация reward_price от фронтенда ───────────────────────────────
-        # Бэкенд сам пересчитывает допустимый диапазон и не доверяет фронту
-        min_reward = total_input * Decimal('0.20')   # минимум 20% суммы
-        max_reward = total_input * Decimal('5.00')   # максимум 500% суммы
+        # границы награды минимум 20% от суммы максимум 500%
+        min_reward = total_input * Decimal('0.20')
+        max_reward = total_input * Decimal('5.00')
 
-        # Если фронт прислал значение вне диапазона — генерируем сами
+        # если фронт прислал некорректную цену генерирую сам с логарифмическим весом
         if not (min_reward <= reward_price <= max_reward):
-            # Логарифмическое распределение: чаще ближе к низкому концу
             t            = Decimal(str(random.random() ** 1.8))
             reward_price = min_reward + t * (max_reward - min_reward)
-            reward_price = (reward_price / 10).quantize(Decimal('1')) * 10  # округляем до 10
+            reward_price = (reward_price / 10).quantize(Decimal('1')) * 10
 
-        # ── Ищем предмет с ближайшей ценой к reward_price ────────────────────
-        # Берём предметы в диапазоне ±30% от reward_price и рандомим среди них
         price_low  = reward_price * Decimal('0.70')
         price_high = reward_price * Decimal('1.30')
 
@@ -453,7 +443,6 @@ class ContractViewSet(viewsets.ViewSet):
             Item.objects.filter(price__gte=price_low, price__lte=price_high)
         )
 
-        # Если в диапазоне ничего нет — расширяем до глобального ближайшего
         if not candidate_items:
             candidate_items = list(
                 Item.objects.annotate(
@@ -469,11 +458,9 @@ class ContractViewSet(viewsets.ViewSet):
 
         result_item = random.choice(candidate_items)
 
-        # ── Списываем сданные предметы ────────────────────────────────────────
         DropHistory.objects.filter(inventory_item__in=inventory_items).update(is_sold=True)
         inventory_items.delete()
 
-        # ── Выдаём новый предмет ──────────────────────────────────────────────
         new_inventory_item = InventoryItem.objects.create(
             user=request.user,
             item=result_item
@@ -485,7 +472,6 @@ class ContractViewSet(viewsets.ViewSet):
             inventory_item=new_inventory_item
         )
 
-        # ── Логируем контракт ─────────────────────────────────────────────────
         ContractHistory.objects.create(
             user         = request.user,
             result_item  = result_item,

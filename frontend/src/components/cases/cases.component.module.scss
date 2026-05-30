@@ -22,87 +22,6 @@
     box-sizing: border-box;
   }
 
-  &__header {
-    width: 100%;
-    position: relative;
-    margin-bottom: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    min-height: 120px;
-
-    &--collapsed {
-      .case_list__header_video { opacity: 0; }
-      .case_list__box_title    { text-shadow: none; }
-    }
-  }
-
-  &__header_video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.9;
-    pointer-events: none;
-    z-index: 1;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-    transform-origin: top;
-  }
-
-  &__box {
-    position: relative;
-    z-index: 2;
-    padding: 0 40px;
-  }
-
-  &__box_title {
-    margin: 0;
-    font-size: 44px;
-    font-family: 'DrukCyr', sans-serif;
-    text-transform: uppercase;
-    font-style: italic;
-    letter-spacing: 2px;
-    color: #fff;
-    text-shadow:
-            0 0 12px rgba(70, 126, 255, 0.7),
-            0 0 30px rgba(70, 126, 255, 0.35);
-  }
-
-  &__header_button {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #c9d2ff;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 13px;
-    transition: 0.25s ease;
-    z-index: 2;
-
-    &:hover {
-      color: #fff;
-      .case_list__header_img { opacity: 1; }
-    }
-  }
-
-  &__header_img {
-    width: 13px;
-    height: 13px;
-    transition: 0.3s ease;
-    opacity: 0.7;
-
-    &--rotated { transform: rotate(180deg); }
-  }
-
   &__container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
@@ -111,184 +30,16 @@
   }
 }
 
-// ── Фильтры ──────────────────────────────────────────────────────────────────
-
 .filters {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
   width: 100%;
   max-width: 1540px;
   padding: 0 30px;
   box-sizing: border-box;
-
-  &__search_wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 200px;
-  }
-
-  &__search_icon {
-    position: absolute;
-    left: 12px;
-    color: rgba(255, 255, 255, 0.8);
-    pointer-events: none;
-  }
-
-  &__search {
-    width: 100%;
-    padding: 14px 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-
-    &::placeholder { color: rgba(255, 255, 255, 0.5); }
-    &:focus { border-color: rgba(0, 217, 255, 0.7); }
-  }
-
-  &__clear_input {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    font-size: 12px;
-    padding: 2px 4px;
-    line-height: 1;
-    transition: color 0.2s;
-
-    &:hover { color: rgba(255, 255, 255, 0.7); }
-  }
-
-  &__price {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  &__price_input {
-    width: 90px;
-    padding: 14px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-
-    &::placeholder { color: rgba(255, 255, 255, 0.5); }
-    &:focus { border-color: rgba(0, 217, 255, 0.7); }
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button { -webkit-appearance: none; }
-  }
-
-  &__price_sep {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-  }
-
-  &__reset {
-    padding: 14px 16px;
-    background: rgba(255, 60, 60, 0.08);
-    border: 1px solid rgba(255, 60, 60, 0.25);
-    color: rgba(255, 100, 100, 0.8);
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-
-    &:hover {
-      background: rgba(255, 60, 60, 0.15);
-      border-color: rgba(255, 60, 60, 0.45);
-      color: #ff6464;
-    }
-  }
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
 }
-
-// ── Дропдаун поиска ───────────────────────────────────────────────────────────
-
-.search_dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  background: #0e1535;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-  z-index: 100;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-
-  &__item {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    background: none;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transition: background 0.15s;
-    text-align: left;
-    box-sizing: border-box;
-
-    &:last-child { border-bottom: none; }
-
-    &:hover { background: rgba(255, 255, 255, 0.06); }
-
-    mark {
-      background: none;
-      color: #00d9ff;
-      font-weight: 700;
-    }
-  }
-
-  &__img {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-
-  &__name {
-    flex: 1;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.85);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__price {
-    font-size: 13px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.4);
-    flex-shrink: 0;
-  }
-
-  &__empty {
-    padding: 14px 16px;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.3);
-    text-align: center;
-  }
-}
-
-// ── Карточка кейса ────────────────────────────────────────────────────────────
 
 .case_card_link {
   text-decoration: none;
@@ -304,18 +55,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease;
 
   &:hover img { transform: scale(1.04); }
-
-  &__glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top, rgba(255, 120, 0, 0.35), transparent 60%);
-    opacity: 0.65;
-    transition: 0.3s ease;
-    pointer-events: none;
-  }
 
   img {
     width: 182px;
@@ -345,25 +87,14 @@
     position: relative;
     z-index: 3;
   }
+}
 
-  &__highlight {
-    animation: pulse_highlight 1.8s ease forwards;
-  }
+.case_card_highlight {
+  animation: pulse_highlight 1.8s ease forwards;
 }
 
 @keyframes pulse_highlight {
   0%   { filter: brightness(1); }
   20%  { filter: brightness(1.6) drop-shadow(0 0 12px rgba(0, 217, 255, 0.8)); }
   100% { filter: brightness(1); }
-}
-
-
-.no_results {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 60px 0;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 14px;
 }

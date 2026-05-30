@@ -1,10 +1,20 @@
-$cyan:   #00d9ff;
-$gold:   #ffe600;
-$green:  #00ff88;
-$red:    #ff3355;
-$bg:     #080a19;
-$panel:  #0c1226;
-$border: rgba(0,217,255,0.12);
+$cyan: #00d9ff;
+$gold: #ffe600;
+$green: #00ff88;
+$red: #ff3355;
+$bg: #080a19;
+$panel: #0c1226;
+$border: rgba(0, 217, 255, 0.12);
+
+:export {
+  cyan: $cyan;
+  gold: $gold;
+  green: $green;
+  red: $red;
+  bg: $bg;
+  panel: $panel;
+  border: $border;
+}
 
 .page {
   min-height: 100vh;
@@ -14,8 +24,6 @@ $border: rgba(0,217,255,0.12);
   color: #e0e0e0;
 }
 
-// ─── Arena ────────────────────────────────────────────────────────────────────
-
 .arena {
   display: grid;
   grid-template-columns: 1fr 300px 1fr;
@@ -24,86 +32,6 @@ $border: rgba(0,217,255,0.12);
   align-items: start;
 }
 
-// ── Slot ──────────────────────────────────────────────────────────────────────
-
-.slot {
-  background: $panel;
-  border: 1px solid $border;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  position: relative;
-  transition: border-color 0.3s, box-shadow 0.3s;
-
-  &_win  {
-    border-color: rgba(0,255,136,0.5) !important;
-    box-shadow: 0 0 24px rgba(0,255,136,0.12) !important;
-  }
-  &_lose {
-    border-color: rgba(255,51,85,0.5) !important;
-    box-shadow: 0 0 24px rgba(255,51,85,0.12) !important;
-  }
-
-  &__label {
-    position: absolute;
-    top: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(0,217,255,0.6);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding-top: 20px;
-    width: 100%;
-  }
-
-  &__img {
-    width: 150px;
-    height: 110px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 16px rgba(0,217,255,0.2));
-  }
-
-  &__name  { font-size: 13px; font-weight: 700; color: white; text-align: center; margin: 0; }
-  &__skin  { font-size: 11px; color: #5a6880; margin: 0; }
-  &__price { font-size: 15px; font-weight: 900; color: $gold; margin: 0; }
-
-  &__remove {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 24px; height: 24px;
-    background: rgba(255,255,255,0.05);
-    border: none; color: #5a6880;
-    cursor: pointer; font-size: 13px;
-    display: flex; align-items: center; justify-content: center;
-    transition: 0.15s;
-    &:hover { color: $red; background: rgba(255,51,85,0.1); }
-  }
-
-  &__empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    color: #3a4a60;
-    font-size: 12px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-}
-
-// ── Wheel center ──────────────────────────────────────────────────────────────
-
 .wheel_wrap {
   display: flex;
   flex-direction: column;
@@ -111,61 +39,6 @@ $border: rgba(0,217,255,0.12);
   gap: 12px;
   padding: 20px 0;
 }
-
-.chance_badge {
-  font-size: 14px;
-  font-weight: 800;
-  color: $cyan;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 6px 18px;
-  border: 1px solid rgba(0,217,255,0.2);
-  background: rgba(0,217,255,0.05);
-  transition: 0.3s;
-  text-align: center;
-
-  &_win  { color: $green; border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.07); }
-  &_lose { color: $red;   border-color: rgba(255,51,85,0.3);  background: rgba(255,51,85,0.07); }
-}
-
-.upgrade_btn {
-  width: 100%;
-  height: 50px;
-  background: rgba(0,217,255,0.09);
-  border: 1.5px solid $cyan;
-  color: white;
-  font-size: 16px;
-  font-weight: 900;
-  font-family: inherit;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: 0.25s;
-  box-shadow: inset 0 0 20px rgba(0,217,255,0.08), 0 0 18px rgba(0,217,255,0.14);
-
-  &:hover:not(:disabled) {
-    background: rgba(0,217,255,0.16);
-    box-shadow: inset 0 0 28px rgba(0,217,255,0.14), 0 0 28px rgba(0,217,255,0.3);
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-    border-color: rgba(0,217,255,0.2);
-  }
-
-  &_spin {
-    animation: btnPulse 0.7s ease-in-out infinite;
-  }
-}
-
-@keyframes btnPulse {
-  0%,100% { box-shadow: inset 0 0 20px rgba(0,217,255,0.08), 0 0 18px rgba(0,217,255,0.14); }
-  50%      { box-shadow: inset 0 0 28px rgba(0,217,255,0.18), 0 0 32px rgba(0,217,255,0.4); }
-}
-
-// ─── Bottom ───────────────────────────────────────────────────────────────────
 
 .bottom {
   display: grid;
@@ -198,34 +71,12 @@ $border: rgba(0,217,255,0.12);
 
   &__count {
     font-size: 11px;
-    background: rgba(0,217,255,0.1);
+    background: rgba(0, 217, 255, 0.1);
     color: $cyan;
     padding: 2px 10px;
     font-weight: 700;
   }
-
-  &__filters {
-    display: flex;
-    gap: 6px;
-  }
 }
-
-.filter_input {
-  width: 80px;
-  height: 30px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(0,217,255,0.18);
-  color: #c0cce0;
-  font-size: 12px;
-  padding: 0 8px;
-  font-family: inherit;
-
-  &::placeholder { color: #3a4a60; }
-  &:focus { outline: none; border-color: $cyan; }
-  &::-webkit-inner-spin-button { display: none; }
-}
-
-// ── Inventory grid ────────────────────────────────────────────────────────────
 
 .inv_grid {
   display: grid;
@@ -235,187 +86,43 @@ $border: rgba(0,217,255,0.12);
   max-height: 489px;
   overflow-y: auto;
 
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: rgba(0,217,255,0.2); }
-}
-
-.inv_card {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 8px 6px;
-  cursor: pointer;
-  position: relative;
-  transition: 0.15s;
-
-  &:hover { border-color: rgba(0,217,255,0.3); transform: translateY(-2px); }
-  &_selected { border-color: $cyan !important; background: rgba(0,217,255,0.07); }
-
-  &__price { font-size: 10px; font-weight: 700; color: $gold; display: block; margin-bottom: 4px; }
-  &__img   { width: 100%; height: 56px; object-fit: contain; display: block; margin: 0 auto 5px; }
-  &__name  { font-size: 10px; font-weight: 700; color: #c0cce0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
-  &__skin  { font-size: 9px; color: #3a4a60; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
-
-  &__check {
-    position: absolute; top: 5px; right: 5px;
-    width: 16px; height: 16px;
-    background: $cyan; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: #080a19; font-size: 9px; font-weight: 900;
-  }
-}
-
-// ── Target grid ───────────────────────────────────────────────────────────────
-
-.target_grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  padding: 12px;
-  max-height: 420px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: rgba(0,217,255,0.2); }
-}
-
-.target_card {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 8px 5px 6px;
-  cursor: pointer;
-  position: relative;
-  transition: 0.15s;
-
-  &:hover { border-color: rgba(0,217,255,0.3); transform: translateY(-2px); }
-  &_selected { border-color: $cyan !important; background: rgba(0,217,255,0.07); }
-
-  &__price { font-size: 10px; font-weight: 700; color: $gold; display: block; margin-bottom: 3px; }
-  &__img   { width: 100%; height: 52px; object-fit: contain; display: block; margin: 2px auto 5px; }
-  &__name  { font-size: 9px; font-weight: 700; color: #c0cce0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
-  &__skin  { font-size: 8px; color: #3a4a60; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
-
-  &__chance {
-    text-align: center;
-    font-size: 9px;
-    font-weight: 800;
-    margin-top: 4px;
-    padding: 1px 4px;
-  }
-}
-
-// Цвета шанса
-.chance_good { color: $green; background: rgba(0,255,136,0.1); }
-.chance_mid  { color: $gold;  background: rgba(255,230,0,0.1); }
-.chance_low  { color: $red;   background: rgba(255,51,85,0.1); }
-
-// ── Rarity borders ────────────────────────────────────────────────────────────
-
-.rarity_blue   { border-left: 3px solid #4b69ff; }
-.rarity_purple { border-left: 3px solid #8847ff; }
-.rarity_pink   { border-left: 3px solid #d32ce6; }
-.rarity_red    { border-left: 3px solid #eb4b4b; }
-.rarity_gold   { border-left: 3px solid #e4ae39; }
-
-// ── Pagination ────────────────────────────────────────────────────────────────
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  border-top: 1px solid $border;
-}
-
-.page_btn {
-  width: 32px; height: 32px;
-  background: rgba(0,217,255,0.06);
-  border: 1px solid rgba(0,217,255,0.2);
-  color: $cyan; cursor: pointer; font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-  transition: 0.15s;
-  &:hover:not(:disabled) { background: rgba(0,217,255,0.14); }
-  &:disabled { opacity: 0.3; cursor: default; }
-}
-
-.page_info { font-size: 12px; color: #3a4a60; min-width: 50px; text-align: center; }
-
-.empty_state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 40px 20px;
-  color: #3a4a60;
-  font-size: 13px;
-}
-
-// ─── Result modal ─────────────────────────────────────────────────────────────
-
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.88);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000; backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: $panel;
-  border: 1px solid $border;
-  padding: 40px;
-  text-align: center;
-  min-width: 320px;
-  animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-
-  &_win  { border-color: rgba(0,255,136,0.4); box-shadow: 0 0 40px rgba(0,255,136,0.1); }
-  &_lose { border-color: rgba(255,51,85,0.4);  box-shadow: 0 0 40px rgba(255,51,85,0.1); }
-
-  &__emoji { font-size: 56px; margin-bottom: 12px; }
-
-  &__title {
-    font-size: 22px; font-weight: 900; color: white;
-    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;
+  &::-webkit-scrollbar {
+    width: 3px;
   }
 
-  &__item {
-    margin: 16px 0;
-    img    { width: 110px; height: 80px; object-fit: contain; display: block; margin: 0 auto 10px; }
-    p      { font-size: 13px; color: #8090b0; margin-bottom: 4px; }
-    strong { font-size: 18px; color: $gold; font-weight: 900; }
-  }
-
-  &__desc { color: #5a6880; font-size: 14px; margin: 16px 0; }
-
-  &__sub { color: #3a4a60; font-size: 12px; margin-bottom: 20px; }
-
-  &__btn {
-    height: 46px; padding: 0 32px;
-    background: rgba(0,217,255,0.09);
-    border: 1.5px solid $cyan;
-    color: white; font-size: 14px; font-weight: 800;
-    font-family: inherit; text-transform: uppercase; letter-spacing: 1px;
-    cursor: pointer; transition: 0.2s;
-    &:hover { background: rgba(0,217,255,0.18); }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 217, 255, 0.2);
   }
 }
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.88) translateY(10px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0); }
-}
-
-// ─── Auth wall ────────────────────────────────────────────────────────────────
 
 .auth_wall {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  min-height: 400px; gap: 20px;
-  p { font-size: 16px; color: #5a6880; }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+
+  p {
+    font-size: 16px;
+    color: #5a6880;
+  }
 }
 
 .auth_btn {
-  height: 48px; padding: 0 32px;
-  background: rgba(0,217,255,0.09);
-  border: 1.5px solid $cyan; color: white;
-  font-size: 15px; font-weight: 800; font-family: inherit;
-  cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
-  &:hover { background: rgba(0,217,255,0.18); }
+  height: 48px;
+  padding: 0 32px;
+  background: rgba(0, 217, 255, 0.09);
+  border: 1.5px solid $cyan;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  &:hover {
+    background: rgba(0, 217, 255, 0.18);
+  }
 }

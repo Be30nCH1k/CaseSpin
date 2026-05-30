@@ -1,0 +1,99 @@
+$cyan: #00d9ff;
+$gold: #ffe600;
+$bg:   #080d1c;
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.slot {
+  width: 150px;
+  height: 350px;
+  position: relative;
+  background: $bg;
+  border: 1px solid rgba(0, 217, 255, 0.1);
+  box-shadow: inset 0 0 24px rgba(0, 217, 255, 0.03);
+  overflow: hidden;
+}
+
+.pointer {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 3px;
+  background: $gold;
+  z-index: 20;
+  box-shadow: 0 0 14px rgba(255, 230, 0, 0.85), 0 0 28px rgba(255, 230, 0, 0.45);
+}
+
+.fade_t,
+.fade_b {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.fade_t {
+  top: 0;
+  background: linear-gradient(to bottom, $bg, transparent);
+}
+
+.fade_b {
+  bottom: 0;
+  background: linear-gradient(to top, $bg, transparent);
+}
+
+.viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  will-change: transform;
+}
+
+.item {
+  width: 100%;
+  height: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(0, 217, 255, 0.06), rgba(14, 20, 40, 1));
+  border: 1px solid rgba(0, 217, 255, 0.06);
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  img {
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.06));
+  }
+}
+
+.item_win {
+  border-color: $cyan;
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.45), inset 0 0 14px rgba(0, 217, 255, 0.12);
+
+  img {
+    filter: drop-shadow(0 0 12px rgba(0, 217, 255, 0.7));
+  }
+}
