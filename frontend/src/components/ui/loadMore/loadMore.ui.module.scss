@@ -1,0 +1,25 @@
+$cyan: #00d9ff;
+$gold: #e3b341;
+$green: #00c846;
+
+$bg: #080a19;
+$card: #0d1225;
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.button {
+  width: 230px;
+  height: 56px;
+  border: 2px solid rgba(0,217,255,.5);
+  color: $cyan;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0,217,255,.1);
+  }
+}

@@ -1,0 +1,128 @@
+$cyan: #00d9ff;
+$gold: #e3b341;
+$green: #00c846;
+
+$bg: #080a19;
+$card: #0d1225;
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+
+  border-bottom: 1px solid rgba(0, 217, 255, 0.08);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 800;
+  color: $cyan;
+
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.count {
+  display: inline-block;
+
+  margin-left: 8px;
+  padding: 1px 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: $cyan;
+  background: rgba(0, 217, 255, 0.1);
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.2s;
+
+  white-space: nowrap;
+
+  svg {
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.8);
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+.filterActive {
+  border-color: rgba(0, 217, 255, 0.5);
+  background: rgba(0, 217, 255, 0.08);
+  color: $cyan;
+
+  svg {
+    opacity: 1;
+    stroke: $cyan;
+  }
+}
+
+.sellAll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  height: 38px;
+  padding: 0 18px;
+
+  background: rgba(0, 200, 70, 0.12);
+  border: 1px solid rgba(0, 200, 70, 0.35);
+
+  color: $green;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  font-family: inherit;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 200, 70, 0.22);
+    border-color: rgba(0, 200, 70, 0.6);
+
+    box-shadow: 0 0 14px rgba(0, 200, 70, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
