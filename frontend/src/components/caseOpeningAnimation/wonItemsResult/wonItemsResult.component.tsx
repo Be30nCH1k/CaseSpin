@@ -2,6 +2,7 @@ import cn from 'classnames';
 import { WonItem } from '../../../types/caseOpening.types.ts';
 import { safePrice } from '../../../hooks/useOpening.hooks.ts';
 import styles from './wonItemsResult.component.module.scss';
+import {Link} from "react-router-dom";
 
 type Props = {
     wonItems:    WonItem[];
@@ -76,9 +77,9 @@ export const WonItemsResult = ({
                 >
                     {sellingAll ? 'Продаём...' : allSold ? 'Всё продано' : `Продать все за ${unsoldTotal.toFixed(2)} ₽`}
                 </button>
-                <button className={styles.action_btn} disabled={sellingAll}>
+                <Link to={"/contract"} className={styles.action_btn}>
                     В контракт
-                </button>
+                </Link>
             </div>
         </div>
     );

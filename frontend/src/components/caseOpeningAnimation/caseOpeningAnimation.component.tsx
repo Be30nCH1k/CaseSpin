@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styles from './caseOpeningAnimation.component.module.scss'
 import { useCaseOpening, safePrice } from '../../hooks/useOpening.hooks.ts'
-import { MultiplierControls }  from '../ui/multiplierControls/multiplierControls.component'
+import { MultiplierControls }  from '../ui/multiplierControls/multiplierControls.ui.tsx'
 import { HorizontalRoulette }  from './horizontalRoulette/horizontalRoulette.component'
 import { VerticalSlots }       from './verticalSlots/verticalSlots.component'
 import { WonItemsResult }      from './wonItemsResult/wonItemsResult.component'

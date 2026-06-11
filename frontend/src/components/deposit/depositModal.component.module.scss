@@ -1,0 +1,527 @@
+// ===== Переменные (цвета mycsgo) =====
+$bg-dark:        #0a0e1a;
+$bg-card:        #151a28;
+$bg-elevated:    #1c2235;
+$bg-input:       #0f1320;
+
+$border-soft:    rgba(255, 255, 255, 0.06);
+$border-hover:   rgba(255, 255, 255, 0.12);
+
+$accent:         #4f7cff;
+$accent-2:       #7c5cff;
+$accent-glow:    rgba(79, 124, 255, 0.35);
+$accent-grad:    linear-gradient(135deg, #4f7cff 0%, #7c5cff 100%);
+
+$text:           #e4e6eb;
+$text-muted:     #8b92a5;
+$text-dim:       #5a6178;
+
+$success:        #2ecc71;
+$error:          #ff5c6c;
+
+$radius-sm:      8px;
+$radius-md:      12px;
+$radius-lg:      18px;
+
+$transition:     180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+// ===== Overlay =====
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  background: rgba(5, 8, 15, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  animation: fadeIn 200ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ===== Modal =====
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: $bg-card;
+  border: 1px solid $border-soft;
+  border-radius: $radius-lg;
+  padding: 28px;
+
+  box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.6),
+          0 0 0 1px rgba(79, 124, 255, 0.08),
+          0 0 80px -20px rgba(124, 92, 255, 0.25);
+
+  animation: slideUp 280ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  // Скроллбар
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ===== Header =====
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid $border-soft;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: $text;
+  letter-spacing: -0.01em;
+
+  // Лёгкий градиентный текст
+  background: $accent-grad;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.close_btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+  color: $text-muted;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all $transition;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: $border-hover;
+    color: $text;
+  }
+}
+
+// ===== Section =====
+.section {
+  margin-bottom: 22px;
+}
+
+.section_label {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-muted;
+}
+
+// ===== Amounts =====
+.amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.amount_btn {
+  padding: 12px 8px;
+  background: $bg-input;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+
+  color: $text;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition;
+
+  &:hover {
+    background: $bg-elevated;
+    border-color: $border-hover;
+    transform: translateY(-1px);
+  }
+
+  &_active {
+    background: linear-gradient(135deg, rgba(79, 124, 255, 0.15), rgba(124, 92, 255, 0.15));
+    border-color: $accent;
+    color: #fff;
+    box-shadow: 0 0 0 1px $accent, 0 0 16px -4px $accent-glow;
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(79, 124, 255, 0.22), rgba(124, 92, 255, 0.22));
+    }
+  }
+}
+
+// ===== Custom amount =====
+.custom_wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.custom_prefix {
+  position: absolute;
+  left: 14px;
+  color: $text-muted;
+  font-size: 15px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.custom_input {
+  width: 100%;
+  padding: 13px 14px 13px 32px;
+  background: $bg-input;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+
+  color: $text;
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+  transition: all $transition;
+
+  // Убираем стрелочки у number
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  &[type='number'] { -moz-appearance: textfield; }
+
+  &::placeholder {
+    color: $text-dim;
+    font-weight: 500;
+  }
+
+  &:focus {
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+  }
+}
+
+// ===== Methods =====
+.methods {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.method_btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+
+  background: $bg-input;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+
+  color: $text;
+  cursor: pointer;
+  transition: all $transition;
+
+  &:hover {
+    background: $bg-elevated;
+    border-color: $border-hover;
+  }
+
+  &_active {
+    background: linear-gradient(135deg, rgba(79, 124, 255, 0.12), rgba(124, 92, 255, 0.12));
+    border-color: $accent;
+    box-shadow: 0 0 0 1px $accent, 0 0 14px -4px $accent-glow;
+  }
+}
+
+.method_icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.method_label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.method_check {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: $accent;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 50%;
+  box-shadow: 0 0 8px $accent-glow;
+}
+
+// ===== Promo =====
+.promo_wrap {
+  display: flex;
+  gap: 8px;
+}
+
+.promo_input {
+  flex: 1;
+  padding: 12px 14px;
+  background: $bg-input;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+
+  color: $text;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  outline: none;
+  transition: all $transition;
+
+  &::placeholder {
+    color: $text-dim;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  &:focus {
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+  }
+
+  &.promo_ok {
+    border-color: $success;
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+  }
+
+  &.promo_err {
+    border-color: $error;
+    box-shadow: 0 0 0 3px rgba(255, 92, 108, 0.15);
+  }
+}
+
+.promo_btn {
+  padding: 0 18px;
+  background: $bg-elevated;
+  border: 1px solid $border-soft;
+  border-radius: $radius-sm;
+
+  color: $text;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition;
+
+  &:hover:not(:disabled) {
+    background: rgba(79, 124, 255, 0.15);
+    border-color: $accent;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.promo_success {
+  margin: 10px 0 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: $success;
+}
+
+.promo_error {
+  margin: 10px 0 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: $error;
+}
+
+// ===== Summary =====
+.summary {
+  padding: 16px;
+  margin-bottom: 18px;
+  background: $bg-input;
+  border: 1px solid $border-soft;
+  border-radius: $radius-md;
+}
+
+.summary_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+
+  font-size: 14px;
+  color: $text-muted;
+
+  span:last-child {
+    font-weight: 600;
+    color: $text;
+  }
+}
+
+.summary_bonus {
+  span:first-child { color: $success; }
+  span:last-child  { color: $success; }
+}
+
+.summary_total {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed $border-soft;
+
+  font-size: 16px;
+
+  span { color: $text !important; font-weight: 700 !important; }
+  span:last-child {
+    background: $accent-grad;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 18px;
+  }
+}
+
+// ===== Error =====
+.error {
+  margin: 0 0 14px 0;
+  padding: 10px 14px;
+  background: rgba(255, 92, 108, 0.08);
+  border: 1px solid rgba(255, 92, 108, 0.25);
+  border-radius: $radius-sm;
+
+  color: $error;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+// ===== Pay button =====
+.pay_btn {
+  width: 100%;
+  padding: 15px;
+  background: $accent-grad;
+  border: none;
+  border-radius: $radius-md;
+
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all $transition;
+
+  box-shadow:
+          0 4px 20px -4px $accent-glow,
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  // Блик
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.15),
+                    transparent
+    );
+    transition: left 600ms ease;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+            0 8px 28px -4px $accent-glow,
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+    &::before { left: 100%; }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &_loading {
+    cursor: wait;
+  }
+}
+
+// ===== Disclaimer =====
+.disclaimer {
+  margin: 14px 0 0 0;
+  font-size: 11px;
+  color: $text-dim;
+  text-align: center;
+  line-height: 1.5;
+}
+
+// ===== Адаптив =====
+@media (max-width: 520px) {
+  .modal {
+    padding: 22px 18px;
+  }
+
+  .amounts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .methods {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+}

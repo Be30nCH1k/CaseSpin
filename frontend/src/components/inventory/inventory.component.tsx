@@ -4,11 +4,11 @@ import styles from "./inventory.component.module.scss";
 
 import { useInventory,safePrice } from "../../hooks/useInventory.hooks.ts";
 import { InventoryProfile } from "./profile/profile.component.tsx";
-import { InventoryToolbar } from "../ui/toolbar/toolbar.component.tsx";
+import { InventoryToolbar } from "../ui/toolbar/toolbar.ui.tsx";
 import { InventoryCard } from "./card/card.component.tsx";
-import { InventoryLoader } from "../ui/loader/loader.component.tsx";
+import { InventoryLoader } from "../ui/loader/loader.ui.tsx";
 import { InventoryEmpty } from "./empty/empty.component.tsx";
-import { LoadMore } from "../ui/loadMore/loadMore.component.tsx";
+import { LoadMore } from "../ui/loadMore/loadMore.ui.tsx";
 
 export const InventoryComponent = () => {
     const {

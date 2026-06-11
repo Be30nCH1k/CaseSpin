@@ -151,7 +151,7 @@ $gold: #ffe600;
 
 .action_btn {
   height: 50px;
-  padding: 0 24px;
+  padding: 15px 24px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(12, 18, 36, 0.97);
   color: white;
@@ -161,6 +161,7 @@ $gold: #ffe600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: 0.2s;
+  align-items: center;
 
   &:hover {
     border-color: $cyan;

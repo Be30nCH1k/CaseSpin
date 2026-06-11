@@ -1,9 +1,10 @@
 import React from 'react'
 import styles from './cases.component.module.scss'
 import { useCasesHooks }   from '../../hooks/useCases.hooks.ts'
-import { SearchBar }       from '../ui/searchBar/searchBar.component.tsx'
-import { PriceFilter }     from '../ui/priceFilter/priceFilter.component.tsx'
+import { SearchBar }       from '../ui/searchBar/searchBar.ui.tsx'
+import { PriceFilter }     from '../ui/priceFilter/priceFilter.ui.tsx'
 import { CategorySection } from './categorySection/categorySection.tsx'
+import { PromoBanner }     from '../ui/promoBaner/promoBaner.ui.tsx'
 
 const Cases: React.FC = () => {
     const {
@@ -47,6 +48,9 @@ const Cases: React.FC = () => {
                     onClear={clearFilters}
                 />
             </div>
+
+            {/* Промо-баннер между фильтрами и категориями */}
+            <PromoBanner />
 
             {/* рендерю только категории в которых есть предметы */}
             {Object.entries(categories).map(([key, group]) =>

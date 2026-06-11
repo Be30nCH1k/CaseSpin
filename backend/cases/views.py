@@ -16,7 +16,7 @@ from decimal import Decimal
 from django.db import models as django_models
 
 from .models import Case, InventoryItem, Profile, DropHistory, Item, ContractHistory
-from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer, ContractPerformSerializer
+from .serializers import CaseSerializer, InventoryItemSerializer, DropHistorySerializer, ContractPerformSerializer,DepositSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -494,4 +494,47 @@ class ContractViewSet(viewsets.ViewSet):
             'input_value':  str(total_input),
             'result_value': str(result_item.price),
             'new_balance':  str(profile.balance),
+        })
+
+class DepositView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # промокоды захардкодил как на фронте чтобы совпадали
+    PROMO_CODES = {
+        'BONUS10':  10,
+        'CASESPIN': 15,
+        'WELCOME':  20,
+    }
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = DepositSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        amount = serializer.validated_data['amount']
+        method = serializer.validated_data['method']
+        promo_code = serializer.validated_data.get('promo_code', '').strip().upper()
+
+        with transaction.atomic():
+            # блокирую профиль чтобы баланс не изменился параллельно
+            profile = Profile.objects.select_for_update().get(user=request.user)
+
+            # считаю бонус если промокод валидный
+            bonus_percent = self.PROMO_CODES.get(promo_code, 0)
+            bonus_amount = (amount * bonus_percent / 100).quantize(Decimal('0.01'))
+            total_amount = amount + bonus_amount
+
+            # начисляю баланс через F() чтобы избежать race condition
+            profile.balance = F('balance') + total_amount
+            profile.save()
+            profile.refresh_from_db()
+
+        return Response({
+            'success': True,
+            'amount': str(amount),
+            'bonus_percent': bonus_percent,
+            'bonus_amount': str(bonus_amount),
+            'total_amount': str(total_amount),
+            'method': method,
+            'new_balance': str(profile.balance),
         })

@@ -139,6 +139,13 @@ a {
   background: rgba(0, 170, 55, 0.15);
   border: 1px solid rgba(0, 200, 65, 0.3);
   user-select: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+}
+.balance_chip:hover{
+  border: 1px solid rgba(0, 200, 65, 0.8);
+  transition: all 0.3s ease-in-out;
 }
 
 .balance_plus {

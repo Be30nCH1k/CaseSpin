@@ -238,3 +238,23 @@ class ContractPerformSerializer(serializers.Serializer):
         decimal_places=2,
         help_text='Рассчитанная фронтендом желаемая цена награды'
     )
+
+class DepositSerializer(serializers.Serializer):
+    amount = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        min_value=10,
+        help_text='Сумма пополнения минимум 10 рублей'
+    )
+
+    method = serializers.ChoiceField(
+        choices=['card', 'crypto', 'sbp', 'wallet'],
+        help_text='Способ оплаты'
+    )
+
+    promo_code = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        help_text='Промокод если есть'
+    )

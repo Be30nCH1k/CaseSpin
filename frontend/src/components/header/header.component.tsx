@@ -1,10 +1,11 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
 import logo from "/public/icons/logo.png";
 import cn from "classnames";
 import styles from './header.component.module.scss';
 import api from "../../api/api";
 import { logoutUser } from "../../api/auth";
+import { DepositModal } from "../deposit/depositModel.component.tsx";
 
 type UserInfo = {
     username:   string;
@@ -15,6 +16,7 @@ type UserInfo = {
 export const HeaderComponent = () => {
     const [user,        setUser]        = useState<UserInfo | null>(null);
     const [menuOpen,    setMenuOpen]    = useState(false);
+    const [depositOpen, setDepositOpen] = useState(false); // <-- новое
     const menuRef = useRef<HTMLDivElement>(null);
 
     const fetchUser = useCallback(async () => {
@@ -59,6 +61,13 @@ export const HeaderComponent = () => {
         return () => document.removeEventListener('mousedown', handler);
     }, [menuOpen]);
 
+    // Обработчик успешного пополнения
+    const handleDepositSuccess = (newBalance: string) => {
+        setUser(prev => prev ? { ...prev, balance: newBalance } : prev);
+        // Дублируем событием, чтобы другие компоненты тоже узнали
+        window.dispatchEvent(new CustomEvent('balance:update', { detail: newBalance }));
+    };
+
     return (
         <div className={cn(styles.header)}>
             <nav className={cn(styles.header_nav)}>
@@ -88,12 +97,17 @@ export const HeaderComponent = () => {
                     {user ? (
                         <div className={cn(styles.user_block)}>
 
-                            <div className={cn(styles.balance_chip)}>
+                            {/* Клик по балансу — открывает модалку пополнения */}
+                            <button
+                                type="button"
+                                className={cn(styles.balance_chip)}
+                                onClick={() => setDepositOpen(true)}
+                            >
                                 <span className={cn(styles.balance_plus)}>+</span>
                                 <span className={cn(styles.balance_amount)}>
                                     {parseFloat(user.balance).toFixed(2)} ₽
                                 </span>
-                            </div>
+                            </button>
 
                             <div className={cn(styles.avatar_menu_wrap)} ref={menuRef}>
                                 <div
@@ -174,6 +188,14 @@ export const HeaderComponent = () => {
                     )}
                 </div>
             </nav>
+
+            {/* Модалка пополнения */}
+            {depositOpen && (
+                <DepositModal
+                    onClose={() => setDepositOpen(false)}
+                    onSuccess={handleDepositSuccess}
+                />
+            )}
         </div>
     );
 };

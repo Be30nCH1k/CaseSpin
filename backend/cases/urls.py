@@ -11,7 +11,8 @@ from .views import (
     MeView,
     MyTokenObtainPairView,
     UpgradeViewSet,
-    ContractViewSet
+    ContractViewSet,
+    DepositView
 )
 
 router = DefaultRouter()
@@ -30,4 +31,5 @@ urlpatterns = [
     path('login/',         MyTokenObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(),      name='token_refresh'),
     path('me/',            MeView.as_view(),                name='me'),
+    path('deposit/',       DepositView.as_view(),           name='deposit'),
 ]
